@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <!-- <link href = '/css/output.css' rel = 'stylesheet'> -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href = '/css/output.css' rel = 'stylesheet'>
+  <title>My Project</title>
+</head>
+
+<body>
+  <div id="body" class="my-8 text-center">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <!-- <script src="/tw-elements/dist/js/index.min.js"></script> -->
+  <script>
+    async function readAllCar() {
+      let res = await fetch("http://localhost:8088/car/showAll");
+      let cars = await res.json();
+      let html = `  <a href="/addCar" class="btn btn-primary  m-1">Add</a> </td>
+
+       <table class="table container">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">model</th>
+            <th scope="col">licenseNumber</th>
+            <th scope="col">Action</th>
+    
+          </tr>
+        </thead>
+        <tbody >
+       
+       `;
+
+      cars.forEach(car => {
+        html += `<tr>
+              <th scope="row">${car.id}</th>
+              <td>${car.model}</td>
+              <td>${car.licenseNumber}</td>
+              <td>
+              <button onclick="showCar('${car.id}')" class="btn btn-warning  m-1">show</button>
+              <button onclick="deleteCar('${car.id}')" class="btn btn-danger  m-1">Delete</button>
+              </tr>`
+      });
+      html += ` </tbody>
+      </table>`
+      document.getElementById("body").innerHTML = html;
+    }
+    readAllCar();
+    async function showCar(id) {
+      let res = await fetch(`http://localhost:8088/car/show?id=${id}`);
+      let carData = await res.json();
+      car = carData.data;
+      // console.log(car);
+      let html = ` <div class="card container">
+        <h5 class="card-header">id : ${car.id}</h5>
+        <div class="card-body">
+          <h5 class="card-title">
+licenseNumber : ${car.licenseNumber}</h5>
+          <p class="card-text">
+model :${car.model}</p>
+          <a href="/" class="btn btn-primary">car list</a>
+        </div>
+      </div>`;
+      document.getElementById("body").innerHTML = html;
+    }
+    async function deleteCar(id) {
+      let res = await fetch(`http://localhost:8088/car/delete/${id}`);
+      let response = await res.json();
+      console.log(response);
+      readAllCar();
+    }
+    </script>
+</body>
+
+</html>
